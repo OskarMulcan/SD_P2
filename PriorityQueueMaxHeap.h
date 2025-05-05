@@ -9,6 +9,7 @@ struct Node {
 	T element;
 	int priority;
 	Node* next;
+	Node() : element(T()), priority(0), next(nullptr) {}
 	Node(T element, int priority) : element(element), priority(priority), next(nullptr) {}
 	Node operator<(const Node& other) const {
 		return priority < other.priority;
@@ -28,15 +29,17 @@ struct Node {
 	Node operator>=(const Node& other) const {
 		return priority >= other.priority;
 	}
-	Node operator=(const Node& other) const {
-		element = other.element;
-		priority = other.priority;
+
+	Node& operator=(const Node& other) {
+		if (this != &other) {
+			element = other.element;
+			priority = other.priority;
+			next = other.next;
+		}
 		return *this;
 	}
-	Node(const Node& other) {
-		element = other.element;
-		priority = other.priority;
-	}
+
+	Node(const Node& other) : element(other.element), priority(other.priority), next(other.next) {}
 };
 
 template <typename T>

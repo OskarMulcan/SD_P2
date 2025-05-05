@@ -18,6 +18,8 @@ public:
 	int find(const T& element) const; //Find element in the heap
 	void remove(int index); //Remove element at index
 	void replace(int index, const T& element); //Replace element at index
+	const T& get(int index) const; //Get element at index (const version)
+	int size() const; //Get size of the heap
 private:
 	void heapifyUp(); //Heapify up operation
 	void heapifyDown(); //Heapify down operation
@@ -97,6 +99,20 @@ void MinHeap<T>::replace(int index, const T& element) {
 		heapifyUp(); //Heapify up if new element is smaller
 	else
 		heapifyDown(); //Heapify down if new element is larger
+}
+
+//Get element at index (const version)
+template <typename T>
+const T& MinHeap<T>::get(int index) const {
+	if (index < 0 || index >= heap_.size())
+		throw std::out_of_range("Index out of range"); //Check for valid index
+	return heap_[index]; //Return element at index
+}
+
+//Get size of the heap
+template <typename T>
+int MinHeap<T>::size() const {
+	return heap_.size(); //Get size of the heap
 }
 
 //Heapify up operation
