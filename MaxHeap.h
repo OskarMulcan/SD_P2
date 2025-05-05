@@ -15,6 +15,9 @@ public:
 	T extractMax(); //Extract maximum element from the heap
 	const T& max() const; //Get maximum element (const version)
 	bool empty() const; //Check if the heap is empty
+	int find(const T& element) const; //Find element in the heap
+	void remove(int index); //Remove element at index
+	void replace(int index, const T& element); //Replace element at index
 private:
 	void heapifyUp(); //Heapify up operation
 	void heapifyDown(); //Heapify down operation
@@ -66,6 +69,34 @@ const T& MaxHeap<T>::max() const {
 template <typename T>
 bool MaxHeap<T>::empty() const {
 	return heap_.empty(); //Check if heap is empty
+}
+
+//Find the element in the heap
+template <typename T>
+int MaxHeap<T>::find(const T& element) const {
+	return heap_.find(element); //Find element in the heap
+}
+
+//Remove element at index
+template <typename T>
+void MaxHeap<T>::remove(int index) {
+	if (index < 0 || index >= heap_.size())
+		throw std::out_of_range("Index out of range"); //Check for valid index
+	std::swap(heap_[index], heap_[heap_.size() - 1]); //Swap with last element
+	heap_.popBack(); //Remove last element
+	heapifyDown(); //Heapify down to maintain heap property
+}
+
+//Replace element at index
+template <typename T>
+void MaxHeap<T>::replace(int index, const T& element) {
+	if (index < 0 || index >= heap_.size())
+		throw std::out_of_range("Index out of range"); //Check for valid index
+	heap_[index] = element; //Replace element at index
+	if (element > heap_[index])
+		heapifyUp(); //Heapify up if new element is greater
+	else
+		heapifyDown(); //Heapify down if new element is smaller
 }
 
 //Heapify up operation
