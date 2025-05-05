@@ -12,7 +12,6 @@ using namespace std;
 int main() {
     srand(time(nullptr));
 
-    // Instantiate both priority queue types
     PriorityQueue<string>* pq;
     PriorityQueue<string>* linkedList = new PriorityQueueLinkedList<string>();
     PriorityQueue<string>* fibonacciHeap = new PriorityQueueFibonacciHeap<string>();
@@ -23,7 +22,6 @@ int main() {
             {2, "Fibonacci Heap"}
     };
 
-    // Number of operations to test
     int operationsNumber[] = {1000, 5000, 10000, 50000, 100000};
 
     for (int structure : structures) {
@@ -41,7 +39,6 @@ int main() {
         for (int num : operationsNumber) {
             while (!pq->isEmpty()) pq->dequeue();
 
-            // Enqueue & Peak
             double enqueueTime = 0;
             double peekTime = 0;
             for (int i = 0; i < num; ++i) {
@@ -55,7 +52,6 @@ int main() {
                 peekTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
             }
 
-            // Dequeue
             double dequeueTime = 0;
             for (int i = 0; i < num; ++i) {
                 auto start = chrono::high_resolution_clock::now();
@@ -64,7 +60,6 @@ int main() {
                 dequeueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
             }
 
-            //Results
             cout << "n: " << num << "; "
                  << "Enqueue: " << enqueueTime << " us; "
                  << "Peek: " << peekTime << " us; "
