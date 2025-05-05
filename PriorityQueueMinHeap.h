@@ -75,7 +75,13 @@ public:
 
 	//Implementatotion of changing priority of selected element
 	void modifyPriority(T element, int newPriority) override {
-		int index = heap->find(Node<T>(element, 0));
+		int index = 0;
+		for (int i = 0; i < heap->size(); ++i) {
+			if (heap->get(i).element == element) {
+				index = i;
+				break;
+			}
+		}
 		if (index == -1) {
 			throw std::invalid_argument("Element not found in the heap");
 		}

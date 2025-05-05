@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <chrono>
 #include <string>
 #include <ctime>
@@ -59,6 +59,14 @@ int main() {
                 peekTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
             }
 
+            double modifyTime = 0;
+            for (int i = 0; i < num; ++i) {
+                auto start = chrono::high_resolution_clock::now();
+                pq->modifyPriority("A", rand() % 1000);
+                auto end = chrono::high_resolution_clock::now();
+                modifyTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
+            }
+
             double dequeueTime = 0;
             for (int i = 0; i < num; ++i) {
                 auto start = chrono::high_resolution_clock::now();
@@ -67,10 +75,33 @@ int main() {
                 dequeueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
             }
 
+			double sizeTime = 0;
+			for (int i = 0; i < num; ++i) {
+				auto start = chrono::high_resolution_clock::now();
+				pq->getSize();
+				auto end = chrono::high_resolution_clock::now();
+				sizeTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
+			}
+
             cout << "n: " << num << "; "
                  << "Enqueue: " << enqueueTime << " us; "
                  << "Peek: " << peekTime << " us; "
-                 << "Dequeue: " << dequeueTime << " us\n";
+                 << "Dequeue: " << dequeueTime << " us; "
+				 << "Size: " << sizeTime << " us; "
+				 << "Modify: " << modifyTime << " us\n";
+
+			double averageEnqueueTime = enqueueTime / num;
+			double averagePeekTime = peekTime / num;
+			double averageDequeueTime = dequeueTime / num;
+			double averageModifyTime = modifyTime / num;
+			double averageSizeTime = sizeTime / num;
+
+			cout << "n: " << num << "; "
+				<< "Average Enqueue: " << averageEnqueueTime << " us; "
+				<< "Average Peek: " << averagePeekTime << " us; "
+				<< "Average Dequeue: " << averageDequeueTime << " us; "
+				<< "Average Size: " << averageSizeTime << " us; "
+				<< "Average Modify: " << averageModifyTime << " us\n";
         }
 
         cout << endl;

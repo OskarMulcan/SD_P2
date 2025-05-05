@@ -1,4 +1,4 @@
-#include <stdexcept>
+﻿#include <stdexcept>
 #include <algorithm>
 #include <vector>
 #include "PriorityQueue.h"
@@ -259,8 +259,21 @@ public:
                     child = next;
                 } while (child != node->child);
             }
-            remove(node);
-            enqueue(element, newPriority);
+            //remove(node);
+            //enqueue(element, newPriority);
+
+            //NEW CODE
+			node->priority = newPriority;
+
+            if (node->parent) {
+                cut(node, node->parent);
+                cascadingCut(node->parent);
+            }
+
+			if (node->priority < minNode->priority) {
+				minNode = node;
+			}
+            //END OF NEW CODE
         }
     }
 
