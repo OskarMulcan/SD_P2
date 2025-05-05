@@ -14,11 +14,13 @@ int main() {
 
     PriorityQueue<string>* pq;
     PriorityQueue<string>* linkedList = new PriorityQueueLinkedList<string>();
+    PriorityQueue<string>* heap = new PriorityQueueFibonacciHeap<string>();
     PriorityQueue<string>* fibonacciHeap = new PriorityQueueFibonacciHeap<string>();
 
-    int structures[] = {0, 2};
+    int structures[] = {0, 1,2};
     map<int, string> structuresMap = {
             {0, "Linked List"},
+            {1, "Heap"},
             {2, "Fibonacci Heap"}
     };
 
@@ -28,6 +30,9 @@ int main() {
         switch (structure) {
             case 0:
                 pq = linkedList;
+                break;
+            case 1:
+                pq = heap;
                 break;
             case 2:
                 pq = fibonacciHeap;
