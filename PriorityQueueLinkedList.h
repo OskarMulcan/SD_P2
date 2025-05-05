@@ -6,29 +6,29 @@
 #define SD_P2_PRIORITYQUEUELINKEDLIST_H
 
 template <typename T>
-struct Node {
+struct LinkedNode {
     T element;
     int priority;
-    Node* next;
+    LinkedNode* next;
 
-    Node(T element, int priority) : element(element), priority(priority), next(nullptr) {}
+    LinkedNode(T element, int priority) : element(element), priority(priority), next(nullptr) {}
 };
 
 template <typename T>
 class PriorityQueueLinkedList : public PriorityQueue<T> {
 private:
-    Node<T>* head;
+    LinkedNode<T>* head;
 
 public:
     PriorityQueueLinkedList() : head(nullptr) {}
 
     void enqueue(T element, int priority) {
-        Node<T>* newNode = new Node(element, priority);
+        LinkedNode<T>* newNode = new LinkedNode(element, priority);
         if (!head || priority < head->priority) {
             newNode->next = head;
             head = newNode;
         } else {
-            Node<T>* current = head;
+            LinkedNode<T>* current = head;
             while (current->next && current->next->priority <= priority) {
                 current = current->next;
             }
@@ -39,7 +39,7 @@ public:
 
     T dequeue() {
         if (!head) throw std::runtime_error("Queue is empty");
-        Node<T>* temp = head;
+        LinkedNode<T>* temp = head;
         T element = temp->element;
         head = head->next;
         delete temp;
@@ -47,7 +47,7 @@ public:
     }
 
     int getSize() const {
-        Node<T>* current = head;
+        LinkedNode<T>* current = head;
         if(!head) return 0;
         int size = 1;
         while (current->next != nullptr){
@@ -66,15 +66,15 @@ public:
         if (!head) return;
 
         if (head->element == element) {
-            Node<T>* toReinsert = head;
+            LinkedNode<T>* toReinsert = head;
             head = head->next;
             enqueue(toReinsert->element, newPriority);
             delete toReinsert;
             return;
         }
 
-        Node<T>* prev = head;
-        Node<T>* current = head->next;
+        LinkedNode<T>* prev = head;
+        LinkedNode<T>* current = head->next;
 
         while (current) {
             if (current->element == element) {

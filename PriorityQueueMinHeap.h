@@ -10,22 +10,22 @@ struct Node {
 	int priority;
 	Node* next;
 	Node(T element, int priority) : element(element), priority(priority), next(nullptr) {}
-	Node operator<(const Node& other) const {
+	bool operator<(const Node& other) const {
 		return priority < other.priority;
 	}
-	Node operator>(const Node& other) const {
+	bool operator>(const Node& other) const {
 		return priority > other.priority;
 	}
-	Node operator==(const Node& other) const {
+	bool operator==(const Node& other) const {
 		return priority == other.priority;
 	}
-	Node operator!=(const Node& other) const {
+	bool operator!=(const Node& other) const {
 		return priority != other.priority;
 	}
-	Node operator<=(const Node& other) const {
+	bool operator<=(const Node& other) const {
 		return priority <= other.priority;
 	}
-	Node operator>=(const Node& other) const {
+	bool operator>=(const Node& other) const {
 		return priority >= other.priority;
 	}
 	Node operator=(const Node& other) const {
@@ -80,6 +80,10 @@ public:
 		node.priority = newPriority;
 		heap->replace(index, node);
 	}
+
+    bool isEmpty() const{
+        return (getSize() == 0);
+    }
 };
 
 #endif // !PRIORITY_QUEUE_MIN_HEAP_H

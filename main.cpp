@@ -6,6 +6,8 @@
 #include <map>
 #include "PriorityQueueLinkedList.h"
 #include "PriorityQueueFibonacciHeap.h"
+#include "PriorityQueueMinHeap.h"
+#include "MinHeap.h"
 
 using namespace std;
 
@@ -14,7 +16,7 @@ int main() {
 
     PriorityQueue<string>* pq;
     PriorityQueue<string>* linkedList = new PriorityQueueLinkedList<string>();
-    PriorityQueue<string>* heap = new PriorityQueueFibonacciHeap<string>();
+    PriorityQueue<string>* heap = new PriorityQueueMinHeap<string>();
     PriorityQueue<string>* fibonacciHeap = new PriorityQueueFibonacciHeap<string>();
 
     int structures[] = {0, 1,2};
