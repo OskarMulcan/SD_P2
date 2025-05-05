@@ -1,50 +1,79 @@
 #include <iostream>
+#include <chrono>
 #include <string>
+#include <ctime>
+#include <cstdlib>
+#include <map>
 #include "PriorityQueueLinkedList.h"
-#include "PriorityQueue.h"
 #include "PriorityQueueFibonacciHeap.h"
 
 using namespace std;
 
 int main() {
-    PriorityQueue<string>* pq = new PriorityQueueFibonacciHeap<string>();
+    srand(time(nullptr));
 
-    pq->enqueue("A", 10);
-    cout << pq->getSize() << endl;
-    cout << pq->dequeue() << endl;
-    cout << pq->getSize() << endl;
-    pq->enqueue("A", 10);
-    pq->enqueue("B", 12);
-    pq->enqueue("C", 1);
-    cout << pq->peek() << endl;
-    cout << pq->dequeue() << endl;
-    cout << pq->peek();
-    pq->modifyPriority("B", -1);
-    cout << pq->peek() << endl;
-    cout << pq->dequeue() << endl;
-    cout << pq->peek() << endl;
-    pq->enqueue("Z", 100);
-    cout << pq->getSize() << endl;
-    pq->modifyPriority("Z", -100);
-    cout << pq->peek() << endl;
-    cout << pq->dequeue() << endl;
-    cout << pq->getSize();
-    pq->enqueue("Q", -1000000);
-    cout << pq->peek() << endl;
-    pq->enqueue("R", -5000);
-    pq->enqueue("L", -2000000);
-    cout << pq->dequeue() << endl;
-    pq->modifyPriority("Q", 1000000);
-    cout << pq->peek() << endl;
-    cout << pq->dequeue() << endl;
-    cout << pq->getSize() << endl;
-    cout << pq-> dequeue() << endl;
-    cout << pq->getSize() << endl;
-    cout << pq->peek();
+    // Instantiate both priority queue types
+    PriorityQueue<string>* pq;
+    PriorityQueue<string>* linkedList = new PriorityQueueLinkedList<string>();
+    PriorityQueue<string>* fibonacciHeap = new PriorityQueueFibonacciHeap<string>();
 
+    int structures[] = {0, 2};
+    map<int, string> structuresMap = {
+            {0, "Linked List"},
+            {2, "Fibonacci Heap"}
+    };
 
+    // Number of operations to test
+    int operationsNumber[] = {1000, 5000, 10000, 50000, 100000};
 
+    for (int structure : structures) {
+        switch (structure) {
+            case 0:
+                pq = linkedList;
+                break;
+            case 2:
+                pq = fibonacciHeap;
+                break;
+        }
 
+        cout << "Structure: " << structuresMap[structure] << "\n";
 
+        for (int num : operationsNumber) {
+            while (!pq->isEmpty()) pq->dequeue();
 
+            // Enqueue & Peak
+            double enqueueTime = 0;
+            double peekTime = 0;
+            for (int i = 0; i < num; ++i) {
+                auto start = chrono::high_resolution_clock::now();
+                pq->enqueue("A", rand() % 1000);
+                auto end = chrono::high_resolution_clock::now();
+                enqueueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
+                start = chrono::high_resolution_clock::now();
+                pq->peek();
+                end = chrono::high_resolution_clock::now();
+                peekTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
+            }
+
+            // Dequeue
+            double dequeueTime = 0;
+            for (int i = 0; i < num; ++i) {
+                auto start = chrono::high_resolution_clock::now();
+                pq->dequeue();
+                auto end = chrono::high_resolution_clock::now();
+                dequeueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
+            }
+
+            //Results
+            cout << "n: " << num << "; "
+                 << "Enqueue: " << enqueueTime << " us; "
+                 << "Peek: " << peekTime << " us; "
+                 << "Dequeue: " << dequeueTime << " us\n";
+        }
+
+        cout << endl;
+    }
+    delete linkedList;
+    delete fibonacciHeap;
+    return 0;
 }

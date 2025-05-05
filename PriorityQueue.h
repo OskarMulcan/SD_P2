@@ -9,6 +9,7 @@ public:
     virtual T peek() const = 0;
     virtual int getSize() const = 0;
     virtual void modifyPriority(T element, int newPriority) = 0;
+    virtual bool isEmpty() const = 0;
     virtual ~PriorityQueue() = default;
 };
 

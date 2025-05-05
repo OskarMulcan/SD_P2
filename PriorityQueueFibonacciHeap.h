@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <algorithm>
+#include <vector>
 #include "PriorityQueue.h"
 #ifndef SD_P2_PRIORITYQUEUEFIBONACCIHEAP_H
 #define SD_P2_PRIORITYQUEUEFIBONACCIHEAP_H
@@ -137,27 +138,31 @@ private:
         }
     }
 
-    //Keeps the Fibonacci heap nice and neat; makes it so that it doesn't have two roots of the same degree, then rebuilds the root list
     void consolidate(){
+        std::vector<FibNode<T>*> roots;
+
+        FibNode<T>* curr = minNode;
+        if (curr) {
+            do {
+                roots.push_back(curr);
+                curr = curr->right;
+            } while (curr != minNode);
+        }
+
         int maxDegree = 45;
-        FibNode<T>* trees[46] = {nullptr };
+        FibNode<T>* trees[46] = {nullptr};
 
-        FibNode<T>* start = minNode;
-        FibNode<T>* min = minNode;
-
-        do {
-            FibNode<T>* node1 = min;
-            min = min->right;
-            int degree = node1->degree;
+        for (FibNode<T>* node : roots) {
+            int degree = node->degree;
             while (trees[degree]) {
-                FibNode<T>* node2 = trees[degree];
-                if (node1->priority > node2->priority) std::swap(node1, node2);
-                link(node2, node1);
+                FibNode<T>* other = trees[degree];
+                if (node->priority > other->priority) std::swap(node, other);
+                link(other, node);
                 trees[degree] = nullptr;
                 degree++;
             }
-            trees[degree] = node1;
-        } while (min != start);
+            trees[degree] = node;
+        }
 
         minNode = nullptr;
         for (auto & treeRoot : trees) {
@@ -171,7 +176,7 @@ private:
                 }
             }
         }
-}
+    }
 
 public:
     PriorityQueueFibonacciHeap() : minNode(nullptr), n(0) {}
@@ -195,14 +200,20 @@ public:
         if (!minNode) throw std::runtime_error("Heap is empty");
 
         FibNode<T>* min = minNode;
-        if(min->child){
-            FibNode<T>* minCh = min->child;
-            do{
-                FibNode<T>* next = minCh->right;
-                mergeWithRootList(minCh);
-                minCh->parent = nullptr;
-                minCh = next;
-            } while(minCh != min->child);
+        if (min->child) {
+            std::vector<FibNode<T>*> children;
+            FibNode<T>* child = min->child;
+            do {
+                children.push_back(child);
+                child = child->right;
+            } while (child != min->child);
+
+            for (FibNode<T>* ch : children) {
+                mergeWithRootList(ch);
+                ch->parent = nullptr;
+            }
+
+            min->child = nullptr;
         }
 
         min->left->right = min->right;

@@ -88,10 +88,9 @@ public:
         }
     }
 
-    void isEmpty() const{
+    bool isEmpty() const{
         return head == nullptr;
     }
-
 };
 
 #endif //SD_P2_PRIORITYQUEUELINKEDLIST_H
