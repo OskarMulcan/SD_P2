@@ -1,21 +1,50 @@
 #include <iostream>
+#include <string>
 #include "PriorityQueueLinkedList.h"
 #include "PriorityQueue.h"
+#include "PriorityQueueFibonacciHeap.h"
+
+using namespace std;
 
 int main() {
-    PriorityQueue<int>* pq = new PriorityQueueLinkedList<int>();
+    PriorityQueue<string>* pq = new PriorityQueueFibonacciHeap<string>();
 
-    pq->enqueue(1, 0);
-    std::cout << pq->getSize() << "\n";
-    pq->enqueue(2, 10);
-    pq->enqueue(4,-1);
-    std::cout << pq->peek() << "\n";
-    std::cout << pq->dequeue() << "\n";
-    std::cout << pq->peek() << "\n";
-    pq->modifyPriority(2, -20);
-    pq->enqueue(7, -19);
-    std::cout << pq->peek();
-    std::cout << pq->getSize() << "\n";
+    pq->enqueue("A", 10);
+    cout << pq->getSize() << endl;
+    cout << pq->dequeue() << endl;
+    cout << pq->getSize() << endl;
+    pq->enqueue("A", 10);
+    pq->enqueue("B", 12);
+    pq->enqueue("C", 1);
+    cout << pq->peek() << endl;
+    cout << pq->dequeue() << endl;
+    cout << pq->peek();
+    pq->modifyPriority("B", -1);
+    cout << pq->peek() << endl;
+    cout << pq->dequeue() << endl;
+    cout << pq->peek() << endl;
+    pq->enqueue("Z", 100);
+    cout << pq->getSize() << endl;
+    pq->modifyPriority("Z", -100);
+    cout << pq->peek() << endl;
+    cout << pq->dequeue() << endl;
+    cout << pq->getSize();
+    pq->enqueue("Q", -1000000);
+    cout << pq->peek() << endl;
+    pq->enqueue("R", -5000);
+    pq->enqueue("L", -2000000);
+    cout << pq->dequeue() << endl;
+    pq->modifyPriority("Q", 1000000);
+    cout << pq->peek() << endl;
+    cout << pq->dequeue() << endl;
+    cout << pq->getSize() << endl;
+    cout << pq-> dequeue() << endl;
+    cout << pq->getSize() << endl;
+    cout << pq->peek();
+
+
+
+
 
 
 }
