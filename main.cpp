@@ -86,6 +86,14 @@ int main() {
                 modifyTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
             }
 
+            double sizeTime = 0;
+            for (int i = 0; i < num; ++i) {
+                auto start = chrono::high_resolution_clock::now();
+                pq->getSize();
+                auto end = chrono::high_resolution_clock::now();
+                sizeTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
+            }
+
             double dequeueTime = 0;
             for (int i = 0; i < num; ++i) {
                 auto start = chrono::high_resolution_clock::now();
@@ -94,13 +102,6 @@ int main() {
                 dequeueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
             }
 
-			double sizeTime = 0;
-			for (int i = 0; i < num; ++i) {
-				auto start = chrono::high_resolution_clock::now();
-				pq->getSize();
-				auto end = chrono::high_resolution_clock::now();
-				sizeTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
-			}
 
             cout << "n: " << num << "; "
                  << "Enqueue: " << enqueueTime << " us; "
