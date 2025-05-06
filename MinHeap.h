@@ -94,8 +94,9 @@ template <typename T>
 void MinHeap<T>::replace(int index, const T& element) {
 	if (index < 0 || index >= heap_.size())
 		throw std::out_of_range("Index out of range"); //Check for valid index
+	T oldElement = heap_[index]; //Store old element
 	heap_[index] = element; //Replace element at index
-	if (element < heap_[index])
+	if (element < oldElement)
 		heapifyUp(); //Heapify up if new element is smaller
 	else
 		heapifyDown(); //Heapify down if new element is larger
