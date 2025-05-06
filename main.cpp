@@ -1,8 +1,6 @@
 ﻿#include <iostream>
 #include <chrono>
 #include <string>
-#include <ctime>
-#include <cstdlib>
 #include <map>
 #include <random>
 #include "PriorityQueueLinkedList.h"
@@ -21,9 +19,14 @@ string getRandomCapitalLetter() {
     return string(1, randomChar);
 }
 
-int main() {
-    srand(time(nullptr));
+int generateRandomPriority() {
+	static random_device rd;
+	static mt19937 gen(rd());
+	static uniform_int_distribution<> dist(1, 1000000);
+	return dist(gen);
+}
 
+int main() {
     PriorityQueue<string>* pq;
     PriorityQueue<string>* linkedList = new PriorityQueueLinkedList<string>();
     PriorityQueue<string>* heap = new PriorityQueueMinHeap<string>();
@@ -63,7 +66,7 @@ int main() {
                 elementName += getRandomCapitalLetter();
                 elementName += getRandomCapitalLetter();
                 auto start = chrono::high_resolution_clock::now();
-                pq->enqueue(elementName, rand() % 1000);
+                pq->enqueue(elementName, generateRandomPriority());
                 auto end = chrono::high_resolution_clock::now();
                 enqueueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
                 start = chrono::high_resolution_clock::now();
@@ -78,7 +81,7 @@ int main() {
                 elementName += getRandomCapitalLetter();
                 elementName += getRandomCapitalLetter();
                 auto start = chrono::high_resolution_clock::now();
-                pq->modifyPriority(elementName, rand() % 1000);
+                pq->modifyPriority(elementName, generateRandomPriority());
                 auto end = chrono::high_resolution_clock::now();
                 modifyTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
             }
