@@ -59,8 +59,11 @@ int main() {
             double enqueueTime = 0;
             double peekTime = 0;
             for (int i = 0; i < num; ++i) {
+                string elementName;
+                elementName += getRandomCapitalLetter();
+                elementName += getRandomCapitalLetter();
                 auto start = chrono::high_resolution_clock::now();
-                pq->enqueue(getRandomCapitalLetter(), rand() % 1000);
+                pq->enqueue(elementName, rand() % 1000);
                 auto end = chrono::high_resolution_clock::now();
                 enqueueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
                 start = chrono::high_resolution_clock::now();
@@ -71,8 +74,11 @@ int main() {
 
             double modifyTime = 0;
             for (int i = 0; i < num; ++i) {
+                string elementName;
+                elementName += getRandomCapitalLetter();
+                elementName += getRandomCapitalLetter();
                 auto start = chrono::high_resolution_clock::now();
-                pq->modifyPriority(getRandomCapitalLetter(), rand() % 1000);
+                pq->modifyPriority(elementName, rand() % 1000);
                 auto end = chrono::high_resolution_clock::now();
                 modifyTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
             }
