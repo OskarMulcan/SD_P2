@@ -4,12 +4,22 @@
 #include <ctime>
 #include <cstdlib>
 #include <map>
+#include <random>
 #include "PriorityQueueLinkedList.h"
 #include "PriorityQueueFibonacciHeap.h"
 #include "PriorityQueueMinHeap.h"
 #include "MinHeap.h"
 
 using namespace std;
+
+string getRandomCapitalLetter() {
+    static random_device rd;
+    static mt19937 gen(rd());
+    static uniform_int_distribution<> dist('A', 'Z');
+
+    char randomChar = static_cast<char>(dist(gen));
+    return string(1, randomChar);
+}
 
 int main() {
     srand(time(nullptr));
@@ -50,7 +60,7 @@ int main() {
             double peekTime = 0;
             for (int i = 0; i < num; ++i) {
                 auto start = chrono::high_resolution_clock::now();
-                pq->enqueue("A", rand() % 1000);
+                pq->enqueue(getRandomCapitalLetter(), rand() % 1000);
                 auto end = chrono::high_resolution_clock::now();
                 enqueueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
                 start = chrono::high_resolution_clock::now();
@@ -62,7 +72,7 @@ int main() {
             double modifyTime = 0;
             for (int i = 0; i < num; ++i) {
                 auto start = chrono::high_resolution_clock::now();
-                pq->modifyPriority("A", rand() % 1000);
+                pq->modifyPriority(getRandomCapitalLetter(), rand() % 1000);
                 auto end = chrono::high_resolution_clock::now();
                 modifyTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
             }
@@ -104,9 +114,11 @@ int main() {
 				<< "Average Modify: " << averageModifyTime << " us\n";
         }
 
-        cout << endl;
+        cout << endl << endl;
     }
+
     delete linkedList;
+    delete heap;
     delete fibonacciHeap;
     return 0;
 }
