@@ -22,7 +22,9 @@ public:
 	int size() const; //Get size of the heap
 private:
 	void heapifyUp(); //Heapify up operation
+	void heapifyUp(int index); //Heapify up operation with index
 	void heapifyDown(); //Heapify down operation
+	void heapifyDown(int index); //Heapify down operation with index
 	DynamicArray<T> heap_; //Dynamic array to store heap elements
 };
 
@@ -86,7 +88,8 @@ void MinHeap<T>::remove(int index) {
 		throw std::out_of_range("Index out of range"); //Check for valid index
 	std::swap(heap_[index], heap_[heap_.size() - 1]); //Swap with last element
 	heap_.popBack(); //Remove last element
-	heapifyDown(); //Heapify down to maintain heap property
+	heapifyDown(index); //Heapify down to maintain heap property
+	heapifyUp(index); //Heapify up to maintain heap property
 }
 
 //Replace element at index
@@ -97,9 +100,9 @@ void MinHeap<T>::replace(int index, const T& element) {
 	T oldElement = heap_[index]; //Store old element
 	heap_[index] = element; //Replace element at index
 	if (element < oldElement)
-		heapifyUp(); //Heapify up if new element is smaller
+		heapifyUp(index); //Heapify up if new element is smaller
 	else
-		heapifyDown(); //Heapify down if new element is larger
+		heapifyDown(index); //Heapify down if new element is larger
 }
 
 //Get element at index (const version)
@@ -131,6 +134,23 @@ void MinHeap<T>::heapifyUp() {
 	}
 }
 
+//Heapify up operation with index
+template <typename T>
+void MinHeap<T>::heapifyUp(int index) {
+	if (index < 0 || index >= heap_.size())
+		throw std::out_of_range("Index out of range"); //Check for valid index
+	int i = index; //Start from the given index
+	while (i > 0) {
+		int parent = (i - 1) / 2; //Get parent index
+		if (heap_[i] < heap_[parent]) {
+			std::swap(heap_[i], heap_[parent]); //Swap with parent if current element is smaller
+			i = parent; //Move to parent index
+		}
+		else
+			break;
+	}
+}
+
 //Heapify down operation
 template <typename T>
 void MinHeap<T>::heapifyDown() {
@@ -145,6 +165,30 @@ void MinHeap<T>::heapifyDown() {
 		if (right < size && heap_[right] < heap_[child])
 			child = right; //Update child index if right child is smaller
 
+		if (child != i) {
+			std::swap(heap_[i], heap_[child]); //Swap with smallest child
+			i = child; //Move to child index
+		}
+		else
+			break;
+	}
+}
+
+//Heapify down operation with index
+template <typename T>
+void MinHeap<T>::heapifyDown(int index) {
+	if (index < 0 || index >= heap_.size())
+		throw std::out_of_range("Index out of range"); //Check for valid index
+	int size = heap_.size(); //Get size of heap
+	int i = index; //Start from the given index
+	while (2 * i + 1 < size) {
+		int left = 2 * i + 1; //Get left child index
+		int right = 2 * i + 2; //Get right child index
+		int child = i; //Assume current element is the smallest
+		if (left < size && heap_[left] < heap_[child])
+			child = left; //Update child index if left child is smaller
+		if (right < size && heap_[right] < heap_[child])
+			child = right; //Update child index if right child is smaller
 		if (child != i) {
 			std::swap(heap_[i], heap_[child]); //Swap with smallest child
 			i = child; //Move to child index
