@@ -27,6 +27,9 @@ int generateRandomPriority() {
 }
 
 int main() {
+
+    int testsNum = 50;
+
     PriorityQueue<string>* pq;
     PriorityQueue<string>* linkedList = new PriorityQueueLinkedList<string>();
     PriorityQueue<string>* heap = new PriorityQueueMinHeap<string>();
@@ -39,8 +42,7 @@ int main() {
             {2, "Fibonacci Heap"}
     };
 
-    int operationsNumber[] = {1000, 5000, 10000, 50000, 100000};
-
+    int queueSize[] = {100, 500, 1000, 5000, 10000, 50000, 100000};
     for (int structure : structures) {
         switch (structure) {
             case 0:
@@ -52,83 +54,82 @@ int main() {
             case 2:
                 pq = fibonacciHeap;
                 break;
+
         }
-
-        cout << "Structure: " << structuresMap[structure] << "\n";
-
-        for (int num : operationsNumber) {
-            while (!pq->isEmpty()) pq->dequeue();
-
+        cout << structuresMap[structure] << "\n";
+        for (int size: queueSize) {
             double enqueueTime = 0;
+            double dequeueTime = 0;
             double peekTime = 0;
-            for (int i = 0; i < num; ++i) {
-                string elementName;
-                elementName += getRandomCapitalLetter();
-                elementName += getRandomCapitalLetter();
+            double modifyPriorityTime = 0;
+            double getSizeTime = 0;
+
+            for (int i = 0; i < testsNum; i++) {
+                for (int j = 0; j < size; j++) {
+                    string element = "";
+                    element += getRandomCapitalLetter();
+                    element += getRandomCapitalLetter();
+                    pq->enqueue(element, rand() % 1000000);
+                    cout << j << "\n";
+                }
+                //Enqueue
+                string element = "";
+                element += getRandomCapitalLetter();
+                element += getRandomCapitalLetter();
+                int priority = rand() % 1000000;
                 auto start = chrono::high_resolution_clock::now();
-                pq->enqueue(elementName, generateRandomPriority());
-                auto end = chrono::high_resolution_clock::now();
-                enqueueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
+                pq->enqueue(element, priority);
+                auto stop = chrono::high_resolution_clock::now();
+                pq->dequeue();
+                enqueueTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
+
+                //Dequeue
+                start = chrono::high_resolution_clock::now();
+                pq->dequeue();
+                stop = chrono::high_resolution_clock::now();
+                element = "";
+                element += getRandomCapitalLetter();
+                element += getRandomCapitalLetter();
+                priority = rand() % 1000000;
+                pq->enqueue(element, priority);
+                dequeueTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
+
+                //Peek
                 start = chrono::high_resolution_clock::now();
                 pq->peek();
-                end = chrono::high_resolution_clock::now();
-                peekTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
-            }
+                stop = chrono::high_resolution_clock::now();
+                peekTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
 
-            double modifyTime = 0;
-            for (int i = 0; i < num; ++i) {
-                string elementName;
-                elementName += getRandomCapitalLetter();
-                elementName += getRandomCapitalLetter();
-                auto start = chrono::high_resolution_clock::now();
-                pq->modifyPriority(elementName, generateRandomPriority());
-                auto end = chrono::high_resolution_clock::now();
-                modifyTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
-            }
-
-            double sizeTime = 0;
-            for (int i = 0; i < num; ++i) {
-                auto start = chrono::high_resolution_clock::now();
+                //GetSize
+                start = chrono::high_resolution_clock::now();
                 pq->getSize();
-                auto end = chrono::high_resolution_clock::now();
-                sizeTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
+                stop = chrono::high_resolution_clock::now();
+                getSizeTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
+
+                //ModifyPriority
+                element = "";
+                element += getRandomCapitalLetter();
+                element += getRandomCapitalLetter();
+                priority = rand() % 1000000;
+                start = chrono::high_resolution_clock::now();
+                pq->modifyPriority(element, priority);
+                stop = chrono::high_resolution_clock::now();
+                modifyPriorityTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
+                for (int i = 0; i < size; i++){
+                    pq->dequeue();
+                }
             }
-
-            double dequeueTime = 0;
-            for (int i = 0; i < num; ++i) {
-                auto start = chrono::high_resolution_clock::now();
-                pq->dequeue();
-                auto end = chrono::high_resolution_clock::now();
-                dequeueTime += chrono::duration_cast<chrono::microseconds>(end - start).count();
-            }
-
-
-            cout << "n: " << num << "; "
-                 << "Enqueue: " << enqueueTime << " us; "
-                 << "Peek: " << peekTime << " us; "
-                 << "Dequeue: " << dequeueTime << " us; "
-				 << "Size: " << sizeTime << " us; "
-				 << "Modify: " << modifyTime << " us\n";
-
-			double averageEnqueueTime = enqueueTime / num;
-			double averagePeekTime = peekTime / num;
-			double averageDequeueTime = dequeueTime / num;
-			double averageModifyTime = modifyTime / num;
-			double averageSizeTime = sizeTime / num;
-
-			cout << "n: " << num << "; "
-				<< "Average Enqueue: " << averageEnqueueTime << " us; "
-				<< "Average Peek: " << averagePeekTime << " us; "
-				<< "Average Dequeue: " << averageDequeueTime << " us; "
-				<< "Average Size: " << averageSizeTime << " us; "
-				<< "Average Modify: " << averageModifyTime << " us\n";
+            enqueueTime /= testsNum;
+            dequeueTime /= testsNum;
+            peekTime /= testsNum;
+            getSizeTime /= testsNum;
+            modifyPriorityTime /= testsNum;
+            cout << "Size: " << size <<"; Enqueue: " << enqueueTime << "; Dequeue: " << dequeueTime << "; Peek: "
+            << peekTime << "; GetSize: " << getSizeTime << "; ModifyPriority: " << modifyPriorityTime << "\n";
         }
-
-        cout << endl << endl;
+        cout << "\n";
     }
-
     delete linkedList;
     delete heap;
     delete fibonacciHeap;
-    return 0;
 }
