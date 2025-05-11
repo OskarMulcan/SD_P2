@@ -51,38 +51,49 @@ private:
 
     //Connects the subtree of the given node with the root list
     void mergeWithRootList(FibNode<T>* node){
-        if(!minNode) {
+        node->left = node;
+        node->right = node;
+
+        if (!minNode) {
             minNode = node;
-            node->left = node;
-            node->right = node;
         } else {
             node->left = minNode;
             node->right = minNode->right;
             minNode->right->left = node;
             minNode->right = node;
-        }
 
-        if (node->priority < minNode->priority){
-            minNode = node;
+            if (node->priority < minNode->priority) {
+                minNode = node;
+            }
         }
     }
 
+
     //Cuts the subtree of nodeCh from its parent nodeP and connects it with the root list
     void cut(FibNode<T>* nodeCh, FibNode<T>* nodeP){
-        if(nodeCh->right == nodeCh){
+        // Remove nodeCh from the sibling list
+        if (nodeCh->right == nodeCh) {
             nodeP->child = nullptr;
         } else {
             nodeCh->left->right = nodeCh->right;
             nodeCh->right->left = nodeCh->left;
+            if (nodeP->child == nodeCh) {
+                nodeP->child = nodeCh->right;
+            }
         }
+
         nodeP->degree--;
 
-        nodeCh->right = nodeCh;
+        // Reset nodeCh's sibling pointers
         nodeCh->left = nodeCh;
+        nodeCh->right = nodeCh;
+
+        // Move to root list
         mergeWithRootList(nodeCh);
         nodeCh->parent = nullptr;
         nodeCh->mark = false;
     }
+
 
     //Tests the parent's patience – if multiple children cut, it cuts itself too
     void cascadingCut(FibNode<T>* node){
@@ -181,6 +192,7 @@ private:
 public:
     PriorityQueueFibonacciHeap() : minNode(nullptr), n(0) {}
 
+    /*
     void enqueue(T element, int priority) {
         FibNode<T> *node = new FibNode<T>(element, priority);
         if (!minNode) {
@@ -196,8 +208,14 @@ public:
         }
         n++;
     }
+     */
+    void enqueue(T element, int priority) override {
+        FibNode<T>* node = new FibNode<T>(element, priority);
+        mergeWithRootList(node);
+        n++;
+    }
     T dequeue(){
-        if (!minNode) throw std::runtime_error("Heap is empty");
+        if (!minNode) throw std::runtime_error("Dequeue: Heap is empty");
 
         FibNode<T>* min = minNode;
         if (min->child) {
@@ -233,7 +251,7 @@ public:
     }
 
     T peek() const{
-        if (!minNode) throw std::runtime_error("Heap is empty");
+        if (!minNode) throw std::runtime_error("Peek: Heap is empty");
         return minNode->element;
     }
 
@@ -247,35 +265,52 @@ public:
         FibNode<T>* node = findNode(minNode, element);
         if (!node) return;
 
-        if (newPriority < node->priority) {
+        int oldPriority = node->priority;
+
+        if (newPriority == oldPriority) return;
+
+        if (newPriority < oldPriority) {
             decreasePriority(node, newPriority);
-        } else if (newPriority > node->priority) {
-            if (node->child) {
-                FibNode<T>* child = node->child;
-                do {
-                    FibNode<T>* next = child->right;
-                    mergeWithRootList(child);
-                    child->parent = nullptr;
-                    child = next;
-                } while (child != node->child);
+            return;
+        }
+
+        // Increasing priority
+        node->priority = newPriority;
+
+        // If node has a parent and violates heap order, cut and cascade
+        FibNode<T>* parent = node->parent;
+        if (parent && node->priority > parent->priority) {
+            cut(node, parent);
+            cascadingCut(parent);
+        }
+
+        // Reinsert children (conservative way to avoid broken child pointer rings)
+        if (node->child) {
+            std::vector<FibNode<T>*> children;
+            FibNode<T>* start = node->child;
+            FibNode<T>* curr = start;
+
+            do {
+                children.push_back(curr);
+                curr = curr->right;
+            } while (curr && curr != start);  // null-check protects against corrupted circular list
+            node->child = nullptr;
+            node->degree = 0;
+
+            for (FibNode<T>* ch : children) {
+                ch->left = ch->right = ch; // break circular links to avoid multi-link bugs
+                ch->parent = nullptr;
+                mergeWithRootList(ch);
             }
-            //remove(node);
-            //enqueue(element, newPriority);
+        }
 
-            //NEW CODE
-			node->priority = newPriority;
-
-            if (node->parent) {
-                cut(node, node->parent);
-                cascadingCut(node->parent);
-            }
-
-			if (node->priority < minNode->priority) {
-				minNode = node;
-			}
-            //END OF NEW CODE
+        // Ensure minNode is still correct
+        if (minNode == nullptr || node->priority < minNode->priority) {
+            minNode = node;
         }
     }
+
+
 
     bool isEmpty() const {
         return minNode == nullptr;

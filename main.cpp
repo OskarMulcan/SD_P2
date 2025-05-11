@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <random>
+#include <cassert>
 #include "PriorityQueueLinkedList.h"
 #include "PriorityQueueFibonacciHeap.h"
 #include "PriorityQueueMinHeap.h"
@@ -28,6 +29,13 @@ int generateRandomPriority() {
 
 int main() {
 
+    PriorityQueueFibonacciHeap<int> heap1;
+    heap1.enqueue(10, 5);
+    heap1.enqueue(20, 3);
+    heap1.enqueue(30, 7);
+
+    assert(heap1.peek() == 20);
+    assert(heap1.getSize() == 3);
     int testsNum = 50;
 
     PriorityQueue<string>* pq;
@@ -35,7 +43,7 @@ int main() {
     PriorityQueue<string>* heap = new PriorityQueueMinHeap<string>();
     PriorityQueue<string>* fibonacciHeap = new PriorityQueueFibonacciHeap<string>();
 
-    int structures[] = {0, 1,2};
+    int structures[] = {2};
     map<int, string> structuresMap = {
             {0, "Linked List"},
             {1, "Heap"},
@@ -70,7 +78,6 @@ int main() {
                     element += getRandomCapitalLetter();
                     element += getRandomCapitalLetter();
                     pq->enqueue(element, rand() % 1000000);
-                    cout << j << "\n";
                 }
                 //Enqueue
                 string element = "";
