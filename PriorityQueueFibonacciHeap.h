@@ -274,17 +274,14 @@ public:
             return;
         }
 
-        // Increasing priority
         node->priority = newPriority;
 
-        // If node has a parent and violates heap order, cut and cascade
         FibNode<T>* parent = node->parent;
         if (parent && node->priority > parent->priority) {
             cut(node, parent);
             cascadingCut(parent);
         }
 
-        // Reinsert children (conservative way to avoid broken child pointer rings)
         if (node->child) {
             std::vector<FibNode<T>*> children;
             FibNode<T>* start = node->child;
@@ -293,18 +290,16 @@ public:
             do {
                 children.push_back(curr);
                 curr = curr->right;
-            } while (curr && curr != start);  // null-check protects against corrupted circular list
+            } while (curr && curr != start);
             node->child = nullptr;
             node->degree = 0;
 
             for (FibNode<T>* ch : children) {
-                ch->left = ch->right = ch; // break circular links to avoid multi-link bugs
+                ch->left = ch->right = ch;
                 ch->parent = nullptr;
                 mergeWithRootList(ch);
             }
         }
-
-        // Ensure minNode is still correct
         if (minNode == nullptr || node->priority < minNode->priority) {
             minNode = node;
         }

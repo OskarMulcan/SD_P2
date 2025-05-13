@@ -43,7 +43,7 @@ int main() {
     PriorityQueue<string>* heap = new PriorityQueueMinHeap<string>();
     PriorityQueue<string>* fibonacciHeap = new PriorityQueueFibonacciHeap<string>();
 
-    int structures[] = {2};
+    int structures[] = {0, 1, 2};
     map<int, string> structuresMap = {
             {0, "Linked List"},
             {1, "Heap"},
@@ -88,7 +88,7 @@ int main() {
                 pq->enqueue(element, priority);
                 auto stop = chrono::high_resolution_clock::now();
                 pq->dequeue();
-                enqueueTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
+                enqueueTime += chrono::duration_cast<chrono::nanoseconds>(stop-start).count();
 
                 //Dequeue
                 start = chrono::high_resolution_clock::now();
@@ -99,19 +99,19 @@ int main() {
                 element += getRandomCapitalLetter();
                 priority = rand() % 1000000;
                 pq->enqueue(element, priority);
-                dequeueTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
+                dequeueTime += chrono::duration_cast<chrono::nanoseconds>(stop-start).count();
 
                 //Peek
                 start = chrono::high_resolution_clock::now();
                 pq->peek();
                 stop = chrono::high_resolution_clock::now();
-                peekTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
+                peekTime += chrono::duration_cast<chrono::nanoseconds>(stop-start).count();
 
                 //GetSize
                 start = chrono::high_resolution_clock::now();
                 pq->getSize();
                 stop = chrono::high_resolution_clock::now();
-                getSizeTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
+                getSizeTime += chrono::duration_cast<chrono::nanoseconds>(stop-start).count();
 
                 //ModifyPriority
                 element = "";
@@ -121,16 +121,16 @@ int main() {
                 start = chrono::high_resolution_clock::now();
                 pq->modifyPriority(element, priority);
                 stop = chrono::high_resolution_clock::now();
-                modifyPriorityTime += chrono::duration_cast<chrono::microseconds>(stop-start).count();
+                modifyPriorityTime += chrono::duration_cast<chrono::nanoseconds>(stop-start).count();
                 for (int i = 0; i < size; i++){
                     pq->dequeue();
                 }
             }
-            enqueueTime /= testsNum;
-            dequeueTime /= testsNum;
-            peekTime /= testsNum;
-            getSizeTime /= testsNum;
-            modifyPriorityTime /= testsNum;
+            enqueueTime /= testsNum*1000;
+            dequeueTime /= testsNum*1000;
+            peekTime /= testsNum*1000;
+            getSizeTime /= testsNum*1000;
+            modifyPriorityTime /= testsNum*1000;
             cout << "Size: " << size <<"; Enqueue: " << enqueueTime << "; Dequeue: " << dequeueTime << "; Peek: "
             << peekTime << "; GetSize: " << getSizeTime << "; ModifyPriority: " << modifyPriorityTime << "\n";
         }
